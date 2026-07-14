@@ -1,0 +1,20 @@
+node_modules
+dist
+dist-ssr
+
+# Never leak local env into the image — build args supply the real values.
+# (Vite would otherwise pick up .env.local, which points at 127.0.0.1:54321.)
+.env
+.env.*
+!.env.example
+src/.env
+
+.git
+.gitignore
+.idea
+.vscode
+*.log
+.DS_Store
+Dockerfile
+.dockerignore
+README.md

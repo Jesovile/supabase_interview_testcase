@@ -1,0 +1,20 @@
+# Deploys the frontend SPA as a static site served by nginx over HTTP on port 80.
+# The app talks directly (browser -> Supabase Cloud over HTTPS); nginx serves
+# static files only. Because VITE_* vars are inlined at build time, changing the
+# Supabase target requires a rebuild (`docker compose build --no-cache`).
+#
+# Provide values via a root `.env` file (compose reads it automatically) or the
+# shell environment:
+#   VITE_SUPABASE_URL=https://<ref>.supabase.co
+#   VITE_SUPABASE_ANON_KEY=<cloud anon key>
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+    ports:
+      - "80:80"
+    restart: unless-stopped

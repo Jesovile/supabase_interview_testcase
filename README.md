@@ -46,7 +46,11 @@ npm run dev        # http://localhost:5173
 
 Supabase Studio: http://localhost:54323 · Inbucket (emails): http://localhost:54324
 
-## Demo accounts (from `supabase/seed.sql`)
+## Demo accounts (from `supabase/migrations/0003_seed_demo_data.sql`)
+
+These are seeded by a migration, so they exist in **both** local (`db reset`) and hosted
+(`db push`) databases. On a real deployment, change or remove them — the password is weak and
+public.
 
 | Email             | Password       | Role   | Sees                         |
 | ----------------- | -------------- | ------ | ---------------------------- |
@@ -204,13 +208,71 @@ npx supabase db push        # applies supabase/migrations/* to the cloud DB
 Then set `frontend/.env.local` (or your host's env vars) to the cloud project's
 URL and anon key. Do **not** run `seed.sql` against production.
 
+## Deploy to production (Supabase Cloud + Dockerized frontend)
+
+Target setup: **database/auth on Supabase Cloud**, **frontend in Docker** on a remote
+machine that has only an IP and only HTTP (no domain, no TLS). This works because the SPA
+calls Supabase Cloud **directly over HTTPS from the browser** — an HTTP page is allowed to
+call HTTPS endpoints (mixed-content blocking is only HTTPS→HTTP), so nginx just serves static
+files and no reverse proxy or certificate is needed.
+
+### 1. Backend — schema + auth config via the Supabase CLI
+
+The backend is managed entirely with the CLI, including auth settings — `supabase config push`
+applies `supabase/config.toml`'s `[auth]` block to the linked Cloud project, so no dashboard
+clicks are needed. First set `[auth]` in `config.toml` for your host:
+
+```toml
+[auth]
+site_url = "http://<IP>"
+additional_redirect_urls = ["http://<IP>"]
+enable_confirmations = false   # already set — signup logs the user in immediately
+```
+
+Then authenticate and push (get a token from Dashboard → Account → Access Tokens):
+
+```bash
+export SUPABASE_ACCESS_TOKEN=<your-personal-access-token>
+npx supabase link --project-ref <your-project-ref> -p '<db-password>'
+npx supabase db push        # applies supabase/migrations/* to the cloud DB
+npx supabase config push    # applies the [auth] block (site_url, confirmations off) to Cloud
+```
+
+`config push` syncs the whole supported config, not just those lines — review the diff it
+prints before confirming. Fetch the anon/publishable key for the frontend build with:
+
+```bash
+npx supabase projects api-keys --project-ref <your-project-ref> -o env
+```
+
+`db push` applies `0003_seed_demo_data.sql`, which pre-creates the demo accounts
+(`admin@demo.com` / `worker@demo.com`, password `Password123!`) plus demo projects/stages —
+so you can log in as admin immediately. **Remove or change these before any real use.** The
+`seed.sql` file is intentionally empty (its data moved into the migration).
+
+### 2. Frontend — build and run the container
+
+The Supabase URL and anon key are inlined into the bundle at **build time**, so they are
+passed as Docker build args (the anon key is a public client credential — not a secret).
+
+```bash
+# On the deploy host, from the repo root:
+cp .env.example .env        # then fill in your Cloud URL + anon key
+docker compose up -d --build
+```
+
+The app is now on `http://<IP>` (port 80). To change the Supabase target later, edit `.env`
+and re-run `docker compose up -d --build` (a rebuild is required). Convenience wrappers:
+`make deploy_up`, `make deploy_build`, `make deploy_down`.
+
 ## Project layout
 
 ```
 supabase/
   migrations/0001_init.sql   # enums, tables, auth->profiles trigger
   migrations/0002_rls.sql    # grants, is_admin()/is_assigned() helpers, RLS policies
-  seed.sql                   # demo users, projects, stages, assignment (local only)
+  migrations/0003_seed_demo_data.sql  # demo users, projects, stages, assignment (local + cloud)
+  seed.sql                   # empty (demo data moved into 0003)
 frontend/src/
   lib/supabase.ts            # typed Supabase client
   context/AuthContext.tsx    # session + profile (role), sign in/up/out

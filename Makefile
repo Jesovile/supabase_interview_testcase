@@ -5,7 +5,7 @@
 SUPABASE := npx --yes supabase
 FRONTEND_DIR := frontend
 
-.PHONY: run_local backend frontend install reset stop status clean
+.PHONY: run_local backend frontend install reset stop status clean deploy_build deploy_up deploy_down
 
 ## run_local: start Supabase (backend) then run the frontend dev server
 run_local: backend install
@@ -46,3 +46,19 @@ stop:
 ## clean: stop Supabase and remove frontend build output
 clean: stop
 	rm -rf $(FRONTEND_DIR)/dist
+
+# --- Production deploy (Dockerized frontend -> Supabase Cloud) ---
+# Reads VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY from a root .env file
+# (see .env.example). Values are baked at build time, so rebuild on change.
+
+## deploy_build: build the frontend Docker image against Supabase Cloud
+deploy_build:
+	docker compose build --no-cache
+
+## deploy_up: build (if needed) and start the frontend container on port 80
+deploy_up:
+	docker compose up -d --build
+
+## deploy_down: stop and remove the frontend container
+deploy_down:
+	docker compose down
