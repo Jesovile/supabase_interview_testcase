@@ -10,7 +10,18 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+// Dev-only middleware: delay every request by 3s so loading states are visible.
+// Always active — remove this wrapper to restore normal request timing.
+const REQUEST_DELAY_MS = 3000
+
+const delayedFetch: typeof fetch = async (input, init) => {
+  await new Promise((resolve) => setTimeout(resolve, REQUEST_DELAY_MS))
+  return fetch(input, init)
+}
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  global: { fetch: delayedFetch },
+})
 
 // Convenience row types reused across the app.
 export type Profile = Database['public']['Tables']['profiles']['Row']

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -12,8 +12,7 @@ export function Login() {
 
   if (session) return <Navigate to="/" replace />
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
+  async function handleSignIn() {
     setError(null)
     setSubmitting(true)
     const { error } = await signIn(email, password)
@@ -26,15 +25,14 @@ export function Login() {
     <div className="auth-card">
       <h1>Sign in</h1>
       <p className="muted">Construction Projects Portal</p>
-      <form onSubmit={handleSubmit}>
+      <div>
         <label>
           Email
           <input
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            required
           />
         </label>
         <label>
@@ -44,14 +42,13 @@ export function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
-            required
           />
         </label>
         {error && <p className="error">{error}</p>}
-        <button type="submit" disabled={submitting}>
+        <button type="button" onClick={handleSignIn} disabled={submitting}>
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>
-      </form>
+      </div>
       <p className="muted">
         No account? <Link to="/signup">Create one</Link>
       </p>
