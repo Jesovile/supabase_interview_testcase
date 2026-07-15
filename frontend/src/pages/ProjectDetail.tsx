@@ -43,7 +43,17 @@ export function ProjectDetail() {
     return () => {
       active = false
     }
-  }, [id])
+  }, [])
+
+  const handleNext = () => {
+    if (!nextId) return
+    // Briefly show the loading state, but the [] deps mean the fetch effect
+    // never re-runs — so once loading clears the page still shows the same
+    // (stale) project even though the URL has advanced.
+    setLoading(true)
+    navigate(`/projects/${nextId}`)
+    setTimeout(() => setLoading(false), 400)
+  }
 
   if (loading) return <p>Loading…</p>
   if (error) return <p className="error">{error}</p>
@@ -58,7 +68,7 @@ export function ProjectDetail() {
   return (
     <>
       {nextId && (
-        <button type="button" className="back" onClick={() => navigate(`/projects/${nextId}`)}>
+        <button type="button" className="back" onClick={handleNext}>
           Next →
         </button>
       )}

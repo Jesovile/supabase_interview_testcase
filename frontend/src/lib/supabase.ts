@@ -12,7 +12,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // Dev-only middleware: delay every request by 3s so loading states are visible.
 // Always active — remove this wrapper to restore normal request timing.
-const REQUEST_DELAY_MS = 3000
+const REQUEST_DELAY_MS = 1000
 
 const delayedFetch: typeof fetch = async (input, init) => {
   await new Promise((resolve) => setTimeout(resolve, REQUEST_DELAY_MS))
