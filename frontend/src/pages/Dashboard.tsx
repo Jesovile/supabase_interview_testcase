@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase, type Project } from '../lib/supabase'
 
 export function Dashboard() {
-  const { profile, user, signOut } = useAuth()
+  const { profile, user } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -28,7 +28,7 @@ export function Dashboard() {
   }, [])
 
   return (
-    <div className="page">
+    <>
       <header className="topbar">
         <div>
           <h1>Projects</h1>
@@ -37,9 +37,6 @@ export function Dashboard() {
             {profile && <span className={`badge role-${profile.role}`}>{profile.role}</span>}
           </p>
         </div>
-        <button className="secondary" onClick={() => void signOut()}>
-          Sign out
-        </button>
       </header>
 
       {loading && <p>Loading projects…</p>}
@@ -62,6 +59,6 @@ export function Dashboard() {
           </li>
         ))}
       </ul>
-    </div>
+    </>
   )
 }

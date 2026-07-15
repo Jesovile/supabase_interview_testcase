@@ -37,18 +37,18 @@ export function ProjectDetail() {
     }
   }, [])
 
-  if (loading) return <div className="page">Loading…</div>
-  if (error) return <div className="page error">{error}</div>
+  if (loading) return <p>Loading…</p>
+  if (error) return <p className="error">{error}</p>
   if (!project)
     return (
-      <div className="page">
+      <>
         <p className="muted">Project not found or not available to you.</p>
         <Link to="/">← Back to projects</Link>
-      </div>
+      </>
     )
 
   return (
-    <div className="page">
+    <>
       <Link to="/" className="back">
         ← Back to projects
       </Link>
@@ -86,6 +86,6 @@ export function ProjectDetail() {
           ))}
         </ol>
       )}
-    </div>
+    </>
   )
 }

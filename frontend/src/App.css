@@ -38,7 +38,7 @@ a:hover {
 /* ---------- Auth ---------- */
 .auth-card {
   max-width: 380px;
-  margin: 10vh auto;
+  margin: 6vh auto;
   padding: 2rem;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -90,6 +90,86 @@ button.secondary {
   background: var(--panel-2);
   border: 1px solid var(--border);
   color: var(--text);
+}
+
+/* ---------- App header ---------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.app-brand {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+  user-select: none;
+}
+
+/* ---------- User menu ---------- */
+.user-menu {
+  position: relative;
+}
+.user-menu-signin {
+  font-size: 0.9rem;
+}
+.user-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+.user-menu-name {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-menu-caret {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.user-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  min-width: 12rem;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.user-menu-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.user-menu-info .badge {
+  margin-left: 0;
+  align-self: flex-start;
+}
+.user-menu-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+.user-menu-item:hover {
+  border-color: var(--accent);
 }
 
 /* ---------- Layout ---------- */
