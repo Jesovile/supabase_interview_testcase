@@ -39,7 +39,6 @@ export function Dashboard() {
         </div>
       </header>
 
-      {loading && <p>Loading projects…</p>}
       {error && <p className="error">{error}</p>}
       {!loading && !error && projects.length === 0 && (
         <p className="muted">No projects are available to you yet.</p>
