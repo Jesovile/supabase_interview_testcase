@@ -16,7 +16,7 @@ export function ProjectDetail() {
       setLoading(true)
       // Both queries are RLS-gated; a non-visible project simply returns nothing.
       const [projectRes, stagesRes] = await Promise.all([
-        supabase.from('projects').select('*').eq('id', id).maybeSingle(),
+        supabase.from('projects').select('*').eq('id', id).single(),
         supabase
           .from('project_stages')
           .select('*')
@@ -35,7 +35,7 @@ export function ProjectDetail() {
     return () => {
       active = false
     }
-  }, [id])
+  }, [])
 
   if (loading) return <div className="page">Loading…</div>
   if (error) return <div className="page error">{error}</div>

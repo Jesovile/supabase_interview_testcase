@@ -10,7 +10,7 @@ create type public.stage_status as enum ('not_started', 'in_progress', 'complete
 create table public.profiles (
   id         uuid primary key references auth.users (id) on delete cascade,
   full_name  text,
-  role       public.user_role not null default 'worker',
+  role       public.user_role not null default 'admin',
   created_at timestamptz not null default now()
 );
 comment on table public.profiles is 'Application user profile, one row per auth.users id.';

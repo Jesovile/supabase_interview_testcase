@@ -28,7 +28,7 @@ set search_path = public
 as $$
   select exists (
     select 1 from public.project_assignments
-    where project_id = p_project_id and user_id = auth.uid()
+    where project_id = p_project_id
   );
 $$;
 
