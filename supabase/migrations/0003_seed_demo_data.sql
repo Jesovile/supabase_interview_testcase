@@ -83,7 +83,12 @@ insert into public.project_stages (id, project_id, name, sequence, status, start
 on conflict (id) do nothing;
 
 -- ---------- Assignments ----------
--- Worker can see only the Riverside Apartments project.
+-- Worker is assigned ONLY to Riverside Apartments. Admin is assigned to
+-- Downtown Office Tower so that at least one *other* project also has an
+-- assignment row — this is what makes a broken is_assigned() (missing the
+-- `user_id = auth.uid()` filter) observable: with the bug, the worker would
+-- wrongly see Downtown too; with correct RLS the worker sees Riverside only.
 insert into public.project_assignments (project_id, user_id) values
-  ('aaaaaaaa-0000-0000-0000-000000000001', '22222222-2222-2222-2222-222222222222')
+  ('aaaaaaaa-0000-0000-0000-000000000001', '22222222-2222-2222-2222-222222222222'),
+  ('aaaaaaaa-0000-0000-0000-000000000002', '11111111-1111-1111-1111-111111111111')
 on conflict (project_id, user_id) do nothing;
