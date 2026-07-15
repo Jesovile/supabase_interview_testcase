@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { BrokenProjectCard } from '../components/BrokenProjectCard'
 import { supabase, type Project } from '../lib/supabase'
 
 // A project row plus its embedded assignments and each assignee's profile name.
@@ -56,6 +57,7 @@ export function Dashboard() {
       )}
 
       <ul className="cards">
+        <BrokenProjectCard />
         {projects.map((p) => (
           <li key={p.id} className="card">
             <Link to={`/projects/${p.id}`}>
